@@ -372,7 +372,7 @@ async def extract_text_and_images_with_chunks(pdf_path, output_dir, context_leng
     await text_chunking_instance.text_chunking(full_text)
     
     filepath = os.path.join(output_dir, 'kv_store_text_chunks.json')
-    with open(filepath, 'r') as file:
+    with open(filepath, 'r', encoding='utf-8') as file:
         text_chunks = json.load(file)
 
     # 创建保存图片的目录

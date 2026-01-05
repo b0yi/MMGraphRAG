@@ -142,7 +142,7 @@ class MMGraphRAG:
             else:
                 await self.ChunkingFunc_pdf2md.extract_text_and_images(path)
         filepath = os.path.join(self.working_dir, 'kv_store_text_chunks.json')
-        with open(filepath, 'r') as file:
+        with open(filepath, 'r', encoding='utf-8') as file:
             chunks = json.load(file)
         text_kg_path = os.path.join(self.working_dir,'graph_chunk_entity_relation.graphml')
         if os.path.exists(text_kg_path):
@@ -156,7 +156,7 @@ class MMGraphRAG:
         else:
             await img2graph(imgfolderpath)
         filepath2 = os.path.join(self.working_dir, 'kv_store_image_data.json')
-        with open(filepath2, 'r') as file:
+        with open(filepath2, 'r', encoding='utf-8') as file:
             image_data = json.load(file)
         from fusion import fusion, create_EntityVDB
         # 检查 image_data 是否为空字典

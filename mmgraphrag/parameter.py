@@ -1,5 +1,10 @@
 from dataclasses import dataclass
-from sentence_transformers import SentenceTransformer
+from openai import OpenAI
+#from sentence_transformers import SentenceTransformer
+import numpy as np
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 @dataclass
 class QueryParam:
@@ -10,23 +15,49 @@ class QueryParam:
     # alpha: int = 0.5
     number_of_mmentities: int = 3
 
-cache_path = './cache'
+@dataclass
+class EmbeddingParam:
+    embedding_dim: int = 1024
+    max_token_size: int = 4096
 
-embedding_model_dir = './cache/all-MiniLM-L6-v2'
-EMBED_MODEL = SentenceTransformer(embedding_model_dir, device="cpu")
+EMBED_CONFIG = EmbeddingParam()
+
+cache_path = './cache'
+mineru_dir = "./example_input/mineru_result"
+
+# embedding_model_dir = './cache/all-MiniLM-L6-v2'
+# EMBED_MODEL = SentenceTransformer(embedding_model_dir, device="cpu")
 # EMBED_MODEL = SentenceTransformer(embedding_model_dir, trust_remote_code=True, device="cuda:0")
 
-def encode(content):
-    return EMBED_MODEL.encode(content)
-"""
-def encode(content):
-    return EMBED_MODEL.encode(content, prompt_name="s2p_query", convert_to_tensor=True).cpu()
-"""
+# def encode(content):
+#     return EMBED_MODEL.encode(content)
+# """
+# def encode(content):
+#     return EMBED_MODEL.encode(content, prompt_name="s2p_query", convert_to_tensor=True).cpu()
+# """
 
-mineru_dir = "./example_input/mineru_result"
-API_KEY = "Come on, hand over your API key! No more hiding it away!"
-MODEL = "moonshot-v1-32k"
-URL = "https://api.moonshot.cn/v1"
-MM_API_KEY = "Alright, Sherlock, where’s the API key? Time to crack the case!"
-MM_MODEL = "qwen-vl-max"
-MM_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    
+# LLM model parameters
+API_KEY = os.getenv("LLM_MODEL_API_KEY")
+MODEL = os.getenv("LLM_MODEL_NAME")
+URL = os.getenv("LLM_MODEL_BASE_URL")
+# VLM model parameters
+MM_API_KEY = os.getenv("VLM_MODEL_API_KEY")
+MM_MODEL = os.getenv("VLM_MODEL_NAME")
+MM_URL = os.getenv("VLM_MODEL_BASE_URL")
+# Embedding model parameters
+EMBEDDING_API_KEY = os.getenv("EMBEDDING_MODEL_API_KEY")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL_NAME")
+EMBEDDING_URL = os.getenv("EMBEDDING_MODEL_BASE_URL")
+
+embed_client = OpenAI(
+    api_key=EMBEDDING_API_KEY, 
+    base_url=EMBEDDING_URL
+)
+
+def encode(texts):
+    response = embed_client.embeddings.create(
+        input=texts,
+        model=EMBEDDING_MODEL
+    )
+    return np.array([item.embedding for item in response.data])

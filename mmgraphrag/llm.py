@@ -1,5 +1,12 @@
 from openai import AsyncOpenAI, OpenAI
-from parameter import EMBED_MODEL, encode, API_KEY, MODEL, URL, MM_API_KEY, MM_MODEL, MM_URL
+#from parameter import EMBED_MODEL, encode, API_KEY, MODEL, URL, MM_API_KEY, MM_MODEL, MM_URL
+from parameter import (
+    encode,
+    EMBED_CONFIG,
+    API_KEY, MODEL, URL, # LLM
+    MM_API_KEY, MM_MODEL, MM_URL, # VLM
+    EMBEDDING_API_KEY, EMBEDDING_MODEL, EMBEDDING_URL, # Embedding
+)
 import numpy as np
 import re
 import json
@@ -9,10 +16,16 @@ from storage import (
     BaseKVStorage,
 )
 
+# @wrap_embedding_func_with_attrs(
+#     embedding_dim=EMBED_MODEL.get_sentence_embedding_dimension(),
+#     max_token_size=EMBED_MODEL.max_seq_length,
+# )
+
+
 @wrap_embedding_func_with_attrs(
-    embedding_dim=EMBED_MODEL.get_sentence_embedding_dimension(),
-    max_token_size=EMBED_MODEL.max_seq_length,
-)
+    embedding_dim=EMBED_CONFIG.embedding_dim,
+    max_token_size=EMBED_CONFIG.max_token_size,
+)    
 
 async def local_embedding(texts: list[str]) -> np.ndarray:
     return encode(texts)
