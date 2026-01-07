@@ -1,2 +1,8 @@
 # .env file
 mmgraphrag/.env
+
+# test folder
+mmgraphrag/test
+
+# pycache
+mmgraphrag/__pycache__

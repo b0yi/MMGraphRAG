@@ -150,11 +150,12 @@ class MMGraphRAG:
         else:    
             await self.ExtractEntitiesFromText.text_entity_extraction(chunks)
         imgfolderpath = os.path.join(self.working_dir, 'images')
-        mmkgpath1 = os.path.join(self.working_dir,'graph_merged_image_1.graphml')
-        if os.path.exists(mmkgpath1):
-            logger.info(f"Image knowledge graph is ready. Skipping construction process.")
-        else:
-            await img2graph(imgfolderpath)
+        # mmkgpath1 = os.path.join(self.working_dir,'graph_merged_image_1.graphml')
+        # if os.path.exists(mmkgpath1):
+        #     logger.info(f"Image knowledge graph is ready. Skipping construction process.")
+        # else:
+        logger.info(f"Start constructing image knowledge graph...")
+        await img2graph(imgfolderpath)
         filepath2 = os.path.join(self.working_dir, 'kv_store_image_data.json')
         with open(filepath2, 'r', encoding='utf-8') as file:
             image_data = json.load(file)

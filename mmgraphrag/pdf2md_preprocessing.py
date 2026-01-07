@@ -352,6 +352,7 @@ async def extract_text_and_images_with_chunks(pdf_path, output_dir, context_leng
     """
     提取PDF中的文本块，并与图片关联。图片前后上下文文本提取整合。
     """
+    # folder_path 即為 mireru_result/pdf_name/auto
     folder_path = pdf2markdown(pdf_path, output_dir)
     files = os.listdir(folder_path)
     markdown_files = [file for file in files if file.endswith(".md")]
@@ -376,12 +377,15 @@ async def extract_text_and_images_with_chunks(pdf_path, output_dir, context_leng
         text_chunks = json.load(file)
 
     # 创建保存图片的目录
+    # output_dir 為 example_output
     images_dir = os.path.join(output_dir, 'images')
     if not os.path.exists(images_dir):
         os.makedirs(images_dir)
     
     # 读取json文件，按顺序重命名，并移动图片
+    # get_content_list_json_file 函数返回的路径类似于 mineru_result/pdf_name/auto/pdf_name_content_list.json
     json_file_path = get_content_list_json_file(folder_path)
+    # 將 mineru_result/pdf_name/auto/pdf_name_content_list.json 中的 image 移动到 example_output/images/
     image_move_remove(json_file_path, images_dir, folder_path)
     
     with open(json_file_path, 'r', encoding='utf-8') as file:
